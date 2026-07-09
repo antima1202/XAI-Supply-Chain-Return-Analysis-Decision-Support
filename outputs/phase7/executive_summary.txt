@@ -1,0 +1,22 @@
+[FALLBACK — Gemini API unavailable]
+
+RECOMMENDATION FOR: UNKNOWN
+
+SITUATION SUMMARY:
+This root cause has been identified by the AI framework as requiring
+operational attention based on frequency, impact, and trend analysis.
+
+IMMEDIATE ACTIONS (next 30 days):
+1. Review all confirmed returns in this category for the past 30 days
+2. Identify the top 3 products generating returns in this category
+3. Convene a cross-functional team meeting with the responsible stakeholder
+
+MEDIUM-TERM ACTIONS (30-90 days):
+1. Implement process changes identified from the return review
+2. Establish monthly KPI tracking for this root cause category
+
+EXPECTED IMPACT:
+- Refer to the risk score table for quantified reduction estimates
+- Track return rate for this category before and after intervention
+
+NOTE: Set GEMINI_API_KEY environment variable to enable live AI recommendations.
