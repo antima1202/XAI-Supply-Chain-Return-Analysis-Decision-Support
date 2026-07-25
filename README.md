@@ -225,7 +225,7 @@ The ML target variable is `root_cause_category` — the six operational root cau
 
 | Root Cause | Training Count | % of Returns |
 |------------|---------------|--------------|
-| Product Listing / Information | 3,784 | 27.0% |
+| Product Description Mismatch | 3,784 | 27.0% |
 | Warehouse / Packaging | 2,840 | 20.3% |
 | Customer Preference | 2,802 | 20.0% |
 | Manufacturing / Quality Control | 2,284 | 16.3% |

@@ -37,7 +37,7 @@ ROOT_CAUSE_CLASSES = [
     "Customer Preference",
     "Logistics / Delivery",
     "Manufacturing / Quality Control",
-    "Product Listing / Information",
+    "Product Description Mismatch",
     "Supplier Issues",
     "Warehouse / Packaging",
 ]
@@ -46,7 +46,7 @@ ROOT_CAUSE_SHORT = {
     "Customer Preference":             "Cust. Pref.",
     "Logistics / Delivery":            "Logistics",
     "Manufacturing / Quality Control": "Mfg / QC",
-    "Product Listing / Information":   "Prod. Listing",
+    "Product Description Mismatch":   "Prod. desc Mis",
     "Supplier Issues":                 "Supplier",
     "Warehouse / Packaging":           "Warehouse",
 }
@@ -56,7 +56,7 @@ ROOT_CAUSE_COLOURS = {
     "Customer Preference":             "#4A90D9",
     "Logistics / Delivery":            "#E8563A",
     "Manufacturing / Quality Control": "#F5A623",
-    "Product Listing / Information":   "#7ED321",
+    "Product Description Mismatch":   "#7ED321",
     "Supplier Issues":                 "#9B59B6",
     "Warehouse / Packaging":           "#1ABC9C",
 }
