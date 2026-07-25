@@ -31,7 +31,7 @@ ROOT_CAUSE_CLASSES = [
     "Customer Preference",
     "Logistics / Delivery",
     "Manufacturing / Quality Control",
-    "Product Listing / Information",
+    "Product Description Mismatch",
     "Supplier Issues",
     "Warehouse / Packaging",
 ]
@@ -40,7 +40,7 @@ ROOT_CAUSE_SHORT = {
     "Customer Preference":             "Cust. Pref.",
     "Logistics / Delivery":            "Logistics",
     "Manufacturing / Quality Control": "Mfg / QC",
-    "Product Listing / Information":   "Prod. Listing",
+    "Product Description Mismatch":   "Prod. desc Mis",
     "Supplier Issues":                 "Supplier",
     "Warehouse / Packaging":           "Warehouse",
 }

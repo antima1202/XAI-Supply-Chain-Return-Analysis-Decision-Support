@@ -11,17 +11,15 @@ import joblib
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 
-MODELS_DIR_P5  = PROJECT_ROOT / "models" / "phase5"
-MODELS_DIR_P6  = PROJECT_ROOT / "models" / "phase6"
-MODELS_DIR_P7A = PROJECT_ROOT / "models" / "phase7a"
-MODELS_DIR     = PROJECT_ROOT / "models" / "phase7"
-OUTPUTS_DIR    = PROJECT_ROOT / "outputs" / "phase7"
+MODELS_DIR_P5 = PROJECT_ROOT / "models" / "phase5"
+MODELS_DIR_P6 = PROJECT_ROOT / "models" / "phase6"
+MODELS_DIR    = PROJECT_ROOT / "models" / "phase7"
+OUTPUTS_DIR   = PROJECT_ROOT / "outputs" / "phase7"
 
-RISK_SCORES_PATH        = MODELS_DIR_P6  / "risk_scores.joblib"
-ROOT_CAUSE_SUMMARY_PATH = MODELS_DIR_P5  / "root_cause_summary.joblib"
-BRAND_BREAKDOWN_PATH    = MODELS_DIR_P5  / "brand_breakdown.joblib"
-REGION_BREAKDOWN_PATH   = MODELS_DIR_P5  / "region_breakdown.joblib"
-OPT_RESULTS_PATH        = MODELS_DIR_P7A / "optimisation_results.joblib"
+RISK_SCORES_PATH        = MODELS_DIR_P6 / "risk_scores.joblib"
+ROOT_CAUSE_SUMMARY_PATH = MODELS_DIR_P5 / "root_cause_summary.joblib"
+BRAND_BREAKDOWN_PATH    = MODELS_DIR_P5 / "brand_breakdown.joblib"
+REGION_BREAKDOWN_PATH   = MODELS_DIR_P5 / "region_breakdown.joblib"
 TREND_DATA_PATH         = MODELS_DIR_P5 / "monthly_trend.joblib"
 
 RECOMMENDATIONS_PATH   = MODELS_DIR  / "recommendations.joblib"
@@ -32,13 +30,13 @@ ROOT_CAUSE_CLASSES = [
     "Customer Preference",
     "Logistics / Delivery",
     "Manufacturing / Quality Control",
-    "Product Listing / Information",
+    "Product Description Mismatch",
     "Supplier Issues",
     "Warehouse / Packaging",
 ]
 
 STAKEHOLDER_MAP = {
-    "Product Listing / Information":   "Marketing & Content Team",
+    "Product Description Mismatch":    "Marketing & Content Team",
     "Warehouse / Packaging":           "Warehouse Operations Manager",
     "Manufacturing / Quality Control": "Quality Assurance Team",
     "Supplier Issues":                 "Procurement & Supplier Manager",
@@ -49,12 +47,21 @@ STAKEHOLDER_MAP = {
 COST_PER_RETURN = 22.0
 
 REDUCTION_POTENTIAL = {
-    "Product Listing / Information":   0.35,
+    "Product Description Mismatch":    0.35,
     "Warehouse / Packaging":           0.30,
     "Manufacturing / Quality Control": 0.40,
     "Supplier Issues":                 0.45,
     "Logistics / Delivery":            0.25,
     "Customer Preference":             0.15,
+}
+
+ROOT_CAUSE_COLOURS = {
+    "Customer Preference":             "#4A90D9",
+    "Logistics / Delivery":            "#E8563A",
+    "Manufacturing / Quality Control": "#F5A623",
+    "Product Description Mismatch":    "#7ED321",
+    "Supplier Issues":                 "#9B59B6",
+    "Warehouse / Packaging":           "#1ABC9C",
 }
 
 
@@ -92,13 +99,3 @@ def timer(label: str):
     yield
     elapsed = time.perf_counter() - t0
     log.info("DONE   %s  (%.1f s)", label, elapsed)
-
-# Colour palette for visualisations
-ROOT_CAUSE_COLOURS = {
-    "Customer Preference":             "#4A90D9",
-    "Logistics / Delivery":            "#E8563A",
-    "Manufacturing / Quality Control": "#F5A623",
-    "Product Listing / Information":   "#7ED321",
-    "Supplier Issues":                 "#9B59B6",
-    "Warehouse / Packaging":           "#1ABC9C",
-}
