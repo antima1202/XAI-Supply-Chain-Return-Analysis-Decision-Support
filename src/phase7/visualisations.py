@@ -162,7 +162,7 @@ def plot_savings_waterfall(recommendations: dict) -> None:
         ax.text(i, bottom + saving/2, f"+£{saving:.0f}k",
                 ha="center", va="center", fontsize=9, fontweight="bold", color="white")
         ax.text(i, bottom + saving + 1, f"Total: £{cumulative[i]:.0f}k",
-                ha="center", va="bottom", fontsize=8, color="#333333")
+                ha="center", va="bottom", fontsize=8, color="#111111")
 
     ax.set_xticks(range(len(labels)))
     ax.set_xticklabels(labels, fontsize=9)

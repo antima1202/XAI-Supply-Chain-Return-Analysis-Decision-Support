@@ -229,7 +229,7 @@ def plot_risk_level_donut(risk_df: pd.DataFrame) -> None:
     )
     # Centre annotation
     ax.text(0, 0, f"14,000\nReturns", ha="center", va="center",
-            fontsize=13, fontweight="bold", color="#333333")
+            fontsize=13, fontweight="bold", color="#111111")
     _save(fig, "risk_level_donut.png")
 
 
