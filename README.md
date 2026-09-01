@@ -1,6 +1,6 @@
 # An Explainable AI Framework Integrating Customer Feedback and Transactional Data for Product Return Prediction in Supply Chains
 
-**MSc Dissertation Project — MSc Applied Artificial Intelligence**  
+**MSc Dissertation Project - MSc Applied Artificial Intelligence**  
 **WMG, University of Warwick**
 
 ---
@@ -185,7 +185,7 @@ Verify Ollama is running before executing Phase 7.
 
 Run each phase sequentially from the `files/` directory.
 
-### Phase 2 — NLP Customer Feedback Analysis
+### Phase 2 - NLP Customer Feedback Analysis
 
 Generates sentiment scores, complaint categories, keywords, and LDA topics.
 
@@ -197,7 +197,7 @@ Outputs are saved to `data/processed/phase2/`.
 
 ---
 
-### Phase 3 — Feature Engineering and Root Cause Classification
+### Phase 3 - Feature Engineering and Root Cause Classification
 
 Creates engineered features, applies SMOTE to the training data, trains Logistic Regression, Random Forest, and XGBoost models, and evaluates model performance.
 
@@ -209,7 +209,7 @@ Outputs include trained models, evaluation metrics, and processed feature datase
 
 ---
 
-### Phase 4 — Explainable AI (SHAP)
+### Phase 4 - Explainable AI (SHAP)
 
 Generates SHAP global feature importance, class-level explanations, waterfall plots, and dependence plots.
 
@@ -221,7 +221,7 @@ Outputs are saved to `outputs/phase4/`.
 
 ---
 
-### Phase 5 — Root Cause Analysis
+### Phase 5 - Root Cause Analysis
 
 Aggregates classified returns into operational insights, temporal trends, regional analysis, and business visualisations.
 
@@ -233,7 +233,7 @@ Outputs are saved to `outputs/phase5/`.
 
 ---
 
-### Phase 6 — Risk-Weighted Prioritisation
+### Phase 6 - Risk-Weighted Prioritisation
 
 Calculates composite operational risk scores and assigns priority levels (P1–P6).
 
@@ -245,7 +245,7 @@ Outputs include the risk register and prioritisation tables.
 
 ---
 
-### Phase 7 — LLM Recommendation Engine
+### Phase 7 - LLM Recommendation Engine
 
 Uses the local Llama 3.2 model through Ollama to generate operational recommendations for each prioritised root cause.
 
