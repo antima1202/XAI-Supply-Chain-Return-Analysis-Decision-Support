@@ -18,8 +18,22 @@ import pandas as pd
 import joblib
 import plotly.express as px
 import plotly.graph_objects as go
+import plotly.io as pio
 from plotly.subplots import make_subplots
 import streamlit as st
+
+# ─────────────────────────────────────────────────────────────────────────────
+# GLOBAL PLOTLY TEXT COLOUR
+# CSS injected via st.markdown() cannot reach Plotly's SVG output, since Plotly
+# sets text colour directly as an SVG fill attribute rather than inheriting
+# page-level CSS. This template sets black as the default font colour for
+# every chart's axis labels, tick labels, legend, and annotations in one place,
+# rather than needing font=dict(color=...) added to each individual chart below.
+_black_text_template = go.layout.Template(
+    layout=go.Layout(font=dict(color="#111111"))
+)
+pio.templates["black_text"] = _black_text_template
+pio.templates.default = "plotly+black_text"
 
 # ─────────────────────────────────────────────────────────────────────────────
 # PAGE CONFIG
@@ -31,7 +45,7 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-# Global styles — all text black, table headers bold
+# Global styles - all text black, table headers bold
 st.markdown("""
 <style>
   html, body, [class*="css"], .stMarkdown, p, li, span, div, label,
@@ -162,10 +176,10 @@ def kpi_card(col, label, value, delta=None, colour="#2C5F8A"):
         f"""
         <div style="background:{colour}15;border-left:4px solid {colour};
                     padding:16px;border-radius:8px;margin-bottom:8px">
-            <p style="margin:0;font-size:12px;color:#666;font-weight:600;
+            <p style="margin:0;font-size:12px;color:#111111;font-weight:600;
                       text-transform:uppercase;letter-spacing:0.5px">{label}</p>
             <p style="margin:4px 0 0;font-size:28px;font-weight:700;color:{colour}">{value}</p>
-            {f'<p style="margin:2px 0 0;font-size:12px;color:#888">{delta}</p>' if delta else ''}
+            {f'<p style="margin:2px 0 0;font-size:12px;color:#111111">{delta}</p>' if delta else ''}
         </div>
         """,
         unsafe_allow_html=True,
@@ -176,12 +190,12 @@ def styled_table(df, colour_col=None):
     st.dataframe(df, use_container_width=True, hide_index=True)
 
 # ─────────────────────────────────────────────────────────────────────────────
-# PAGE 1 — OVERVIEW
+# PAGE 1 - OVERVIEW
 # ─────────────────────────────────────────────────────────────────────────────
 if page == "overview":
     st.title("🏠 Supply Chain Return Analysis Framework")
     st.markdown(
-        "An **Explainable AI framework** that analyses confirmed product returns "
+        "An **Explainable AI Framework Integrating Customer Feedback and Transactional Data for Product Return Prediction in Supply Chains** that analyses confirmed product returns "
         "in fashion e-commerce to identify operational root causes and generate "
         "targeted supply chain recommendations."
     )
@@ -203,18 +217,18 @@ if page == "overview":
     with col1:
         st.subheader("10-Phase AI Pipeline")
         phases = [
-            ("1", "Data Collection & Integration",        "Data Engineering",       "✅"),
-            ("2", "NLP Customer Feedback Analysis",       "NLP / Unsupervised ML",  "✅"),
-            ("3", "Feature Engineering",                  "ML Preparation",         "✅"),
-            ("4", "Root Cause Classification (XGBoost)",  "Supervised ML",          "✅"),
-            ("5", "Explainable AI (SHAP)",                "Explainable AI",         "✅"),
-            ("6", "Root Cause Analysis Layer",            "Data Analysis",          "✅"),
-            ("7", "Risk Assessment",                      "Quantitative Scoring",   "✅"),
-            ("8", "LLM Recommendation Engine",            "Generative AI (Ollama)", "✅"),
-            ("9", "Stakeholder Dashboard",                "Decision Support",       "🔄"),
-            ("10","Continuous Feedback Loop",             "Monitoring",             "🔄"),
+            ("1", "Data Collection & Integration",        "Data Engineering"),
+            ("2", "NLP Customer Feedback Analysis",       "NLP / Unsupervised ML"),
+            ("3", "Feature Engineering",                  "ML Preparation"),
+            ("4", "Root Cause Classification (XGBoost)",  "Supervised ML"),
+            ("5", "Explainable AI (SHAP)",                "Explainable AI"),
+            ("6", "Root Cause Analysis Layer",            "Data Analysis"),
+            ("7", "Risk Assessment",                      "Quantitative Scoring"),
+            ("8", "LLM Recommendation Engine",            "Generative AI (Ollama)"),
+            ("9", "Stakeholder Dashboard",                "Decision Support"),
+            ("10","Continuous Feedback Loop",             "Monitoring"),
         ]
-        phase_df = pd.DataFrame(phases, columns=["Phase","Name","Type","Status"])
+        phase_df = pd.DataFrame(phases, columns=["Phase","Name","Type"])
         st.dataframe(phase_df, use_container_width=True, hide_index=True)
 
     with col2:
@@ -252,11 +266,11 @@ if page == "overview":
         )
         fig.update_traces(textposition="outside")
         fig.update_layout(showlegend=False, height=380, plot_bgcolor="rgba(0,0,0,0)")
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, use_container_width=True, key="chart_1_line269")
 
 
 # ─────────────────────────────────────────────────────────────────────────────
-# PAGE 2 — MODEL PERFORMANCE
+# PAGE 2 - MODEL PERFORMANCE
 # ─────────────────────────────────────────────────────────────────────────────
 elif page == "model":
     st.title("📊 Model Performance")
@@ -275,10 +289,13 @@ elif page == "model":
                 "Accuracy":      f"{metrics['accuracy']*100:.1f}%",
                 "Macro F1":      f"{metrics['macro_f1']:.4f}",
                 "Macro ROC-AUC": f"{metrics['macro_auc']:.4f}",
-                "Selected":      "✅ Best" if model == "XGBoost" else "",
+                "Selected":      "Best" if model == "XGBoost" else "",
             })
         model_df = pd.DataFrame(rows)
-        st.dataframe(model_df, use_container_width=True, hide_index=True)
+        def _highlight_best(val):
+            return "background-color: #C8E6C9; color: #111111; font-weight: 600" if val == "Best" else ""
+        st.dataframe(model_df.style.map(_highlight_best, subset=["Selected"]),
+                     use_container_width=True, hide_index=True)
 
     st.divider()
 
@@ -304,7 +321,7 @@ elif page == "model":
             for trace in fig.data:
                 trace.text = [f"{v:.1f}" for v in trace.y]
                 trace.textposition = "outside"
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, use_container_width=True, key="chart_2_line321")
 
     with col2:
         st.subheader("Per-Class F1 Score (XGBoost)")
@@ -344,7 +361,7 @@ elif page == "model":
         fig.update_layout(showlegend=False, height=320,
                           plot_bgcolor="rgba(0,0,0,0)",
                           xaxis_range=[0.95, 1.005])
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, use_container_width=True, key="chart_3_line361")
 
     st.subheader("NLP Feature Contribution to ML")
     nlp_impact = pd.DataFrame({
@@ -359,14 +376,14 @@ elif page == "model":
 
 
 # ─────────────────────────────────────────────────────────────────────────────
-# PAGE 3 — SHAP EXPLAINABILITY
+# PAGE 3 - SHAP EXPLAINABILITY
 # ─────────────────────────────────────────────────────────────────────────────
 elif page == "shap":
     st.title("🔍 SHAP Explainability")
     st.markdown(
         "**SHapley Additive exPlanations** make every XGBoost prediction transparent. "
         "Each prediction is explained by showing how much each feature contributed "
-        "to the classification — positive values push toward the class, "
+        "to the classification - positive values push toward the class, "
         "negative values push away."
     )
     st.divider()
@@ -388,7 +405,7 @@ elif page == "shap":
         ]
 
         # Global importance
-        st.subheader("Global Feature Importance — Mean |SHAP Value|")
+        st.subheader("Global Feature Importance - Mean |SHAP Value|")
         mean_abs = np.abs(shap_values).mean(axis=(0, 2))
         top_n    = 20
         top_idx  = np.argsort(mean_abs)[::-1][:top_n]
@@ -406,7 +423,7 @@ elif page == "shap":
             fig.update_layout(showlegend=False, height=500,
                               plot_bgcolor="rgba(0,0,0,0)",
                               yaxis={"categoryorder":"total ascending"})
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, use_container_width=True, key="chart_4_line423")
         with col2:
             st.dataframe(imp_df.head(15), use_container_width=True, hide_index=True)
 
@@ -439,7 +456,7 @@ elif page == "shap":
             aspect="auto",
         )
         fig.update_layout(height=500)
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, use_container_width=True, key="chart_5_line456")
 
         st.divider()
 
@@ -475,13 +492,13 @@ elif page == "shap":
                 yaxis={"categoryorder":"total ascending"},
                 xaxis_title="Mean |SHAP Value|",
             )
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, use_container_width=True, key="chart_6_line492")
         with col2:
             st.dataframe(class_df, use_container_width=True, hide_index=True)
 
 
 # ─────────────────────────────────────────────────────────────────────────────
-# PAGE 4 — ROOT CAUSE ANALYSIS
+# PAGE 4 - ROOT CAUSE ANALYSIS
 # ─────────────────────────────────────────────────────────────────────────────
 elif page == "rca":
     st.title("📈 Root Cause Analysis")
@@ -521,7 +538,7 @@ elif page == "rca":
             )
             fig.update_traces(textposition="outside", textinfo="percent+label")
             fig.update_layout(showlegend=False, height=380)
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, use_container_width=True, key="chart_7_line538")
 
         with col2:
             st.subheader("Sentiment by Root Cause")
@@ -541,12 +558,12 @@ elif page == "rca":
                 xaxis_title="Mean VADER Sentiment Score",
                 xaxis_range=[-0.35, 0.55],
             )
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, use_container_width=True, key="chart_8_line558")
 
         st.divider()
 
         # Monthly trend
-        st.subheader("Monthly Return Trend (Sep 2023 — Sep 2025)")
+        st.subheader("Monthly Return Trend (Sep 2023 - Sep 2025)")
         if data["trend"] is not None:
             trend = data["trend"].copy()
             trend.index = [str(p) for p in trend.index]
@@ -568,7 +585,7 @@ elif page == "rca":
                 legend=dict(orientation="h", y=-0.3),
                 xaxis=dict(tickangle=45),
             )
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, use_container_width=True, key="chart_9_line585")
 
         st.divider()
 
@@ -589,7 +606,7 @@ elif page == "rca":
                 fig = px.imshow(pivot, text_auto=".1f", color_continuous_scale="YlOrRd",
                                 title="% of Returns Within Each Region",aspect="auto")
                 fig.update_layout(height=320)
-                st.plotly_chart(fig, use_container_width=True)
+                st.plotly_chart(fig, use_container_width=True, key="chart_10_line606")
 
         with col2:
             st.subheader("Brand Comparison")
@@ -602,7 +619,7 @@ elif page == "rca":
 
 
 # ─────────────────────────────────────────────────────────────────────────────
-# PAGE 5 — RISK ASSESSMENT
+# PAGE 5 - RISK ASSESSMENT
 # ─────────────────────────────────────────────────────────────────────────────
 elif page == "risk":
     st.title("⚠️ Risk Assessment")
@@ -632,7 +649,7 @@ elif page == "risk":
 
         st.divider()
 
-        # Risk Register Table — the Excel-style table he asked for
+        # Risk Register Table - the Excel-style table he asked for
         st.subheader("📋 Risk Register")
         risk_register = risk[["priority","root_cause_category","count","pct_of_returns",
                                "frequency_score","impact_score","trend_score",
@@ -680,7 +697,7 @@ elif page == "risk":
                 xaxis_title="Composite Risk Score (0–100)",
                 xaxis_range=[0, 115],
             )
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, use_container_width=True, key="chart_11_line697")
 
         with col2:
             st.subheader("Risk Matrix (Frequency vs Impact)")
@@ -696,7 +713,7 @@ elif page == "risk":
                 fig.add_shape(type="rect",x0=x0,x1=x1,y0=y0,y1=y1,
                               fillcolor=col,line_width=0)
                 fig.add_annotation(x=(x0+x1)/2,y=(y0+y1)/2,text=label,
-                                   showarrow=False,font_size=9,font_color="grey",opacity=0.5)
+                                   showarrow=False,font_size=9,font_color="#111111",opacity=0.5)
 
             for _, row in risk.iterrows():
                 fig.add_trace(go.Scatter(
@@ -723,7 +740,7 @@ elif page == "risk":
                 xaxis=dict(title="Frequency Score (0–100)",range=[-5,115]),
                 yaxis=dict(title="Operational Impact Score (0–100)",range=[-5,115]),
             )
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, use_container_width=True, key="chart_12_line740")
 
         st.divider()
 
@@ -751,17 +768,17 @@ elif page == "risk":
         for i,(_, row) in enumerate(risk_sorted.iterrows()):
             fig.add_annotation(x=short_names[i], y=row["risk_score"]+1.5,
                                 text=f"{row['risk_score']:.1f}",
-                                showarrow=False, font_size=10, font_color="#333")
+                                showarrow=False, font_size=10, font_color="#111111")
         fig.update_layout(
             barmode="stack", height=380, plot_bgcolor="rgba(0,0,0,0)",
             yaxis_title="Weighted Score Contribution",
             legend=dict(orientation="h",y=-0.25),
         )
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, use_container_width=True, key="chart_13_line774")
 
 
 # ─────────────────────────────────────────────────────────────────────────────
-# PAGE 6 — SCENARIO SIMULATOR  (Preset AI Scenarios + Custom + Comparison)
+# PAGE 6 - SCENARIO SIMULATOR  (Preset AI Scenarios + Custom + Comparison)
 # ─────────────────────────────────────────────────────────────────────────────
 elif page == "scenario":
     st.title("🎯 Scenario Simulator")
@@ -784,8 +801,8 @@ elif page == "scenario":
 
         # ── 8 Preset scenario definitions ────────────────────────────────────
         PRESET_SCENARIOS = {
-            "1 — Conservative Budget (£75k)": {
-                "description": "Tight budget — fund only the top 2 highest-risk root causes with standard interventions.",
+            "1 - Conservative Budget (£75k)": {
+                "description": "Tight budget - fund only the top 2 highest-risk root causes with standard interventions.",
                 "budget": 75_000,
                 "cost_per_return": 22,
                 "costs": {"Product Description Mismatch":30000,"Warehouse / Packaging":40000,
@@ -796,8 +813,8 @@ elif page == "scenario":
                                "Customer Preference":0.15,"Logistics / Delivery":0.25},
                 "ai_context": "Conservative budget of £75,000 with standard reduction rates. Only highest-priority interventions are funded.",
             },
-            "2 — Standard Budget — Baseline (£150k)": {
-                "description": "The default baseline scenario — £150,000 budget with industry-standard reduction estimates.",
+            "2 - Standard Budget - Baseline (£150k)": {
+                "description": "The default baseline scenario - £150,000 budget with industry-standard reduction estimates.",
                 "budget": 150_000,
                 "cost_per_return": 22,
                 "costs": {"Product Description Mismatch":30000,"Warehouse / Packaging":40000,
@@ -808,8 +825,8 @@ elif page == "scenario":
                                "Customer Preference":0.15,"Logistics / Delivery":0.25},
                 "ai_context": "Standard baseline scenario with £150,000 budget and default industry reduction rates across all root causes.",
             },
-            "3 — Full Investment (£250k)": {
-                "description": "Maximum investment — fund all 6 root causes with enhanced intervention budgets.",
+            "3 - Full Investment (£250k)": {
+                "description": "Maximum investment - fund all 6 root causes with enhanced intervention budgets.",
                 "budget": 250_000,
                 "cost_per_return": 22,
                 "costs": {"Product Description Mismatch":40000,"Warehouse / Packaging":55000,
@@ -820,8 +837,8 @@ elif page == "scenario":
                                "Customer Preference":0.20,"Logistics / Delivery":0.30},
                 "ai_context": "Full investment scenario with £250,000 budget and enhanced reduction rates from larger-scale interventions.",
             },
-            "4 — Description Fix Priority": {
-                "description": "Intensive content overhaul — concentrate budget on fixing product descriptions, photos, and size guides.",
+            "4 - Description Fix Priority": {
+                "description": "Intensive content overhaul - concentrate budget on fixing product descriptions, photos, and size guides.",
                 "budget": 150_000,
                 "cost_per_return": 22,
                 "costs": {"Product Description Mismatch":80000,"Warehouse / Packaging":40000,
@@ -832,7 +849,7 @@ elif page == "scenario":
                                "Customer Preference":0.20,"Logistics / Delivery":0.25},
                 "ai_context": "Description-first strategy: £80,000 allocated to content overhaul with 55% reduction expected from intensive photography, copywriting, and size guide programme.",
             },
-            "5 — Warehouse Optimisation (Staff +30%)": {
+            "5 - Warehouse Optimisation (Staff +30%)": {
                 "description": "Increase warehouse headcount by 30%, implement pre-dispatch quality checks, and retrain packing team.",
                 "budget": 150_000,
                 "cost_per_return": 22,
@@ -844,8 +861,8 @@ elif page == "scenario":
                                "Customer Preference":0.15,"Logistics / Delivery":0.25},
                 "ai_context": "Warehouse headcount increased by 30% with pre-dispatch QC checks. Higher £70,000 cost but 50% reduction achievable through process and staffing improvements.",
             },
-            "6 — Supply Chain Resilience Programme": {
-                "description": "Strategic focus on Supplier + Manufacturing + Warehouse — address the entire upstream supply chain.",
+            "6 - Supply Chain Resilience Programme": {
+                "description": "Strategic focus on Supplier + Manufacturing + Warehouse - address the entire upstream supply chain.",
                 "budget": 150_000,
                 "cost_per_return": 22,
                 "costs": {"Product Description Mismatch":20000,"Warehouse / Packaging":45000,
@@ -856,8 +873,8 @@ elif page == "scenario":
                                "Customer Preference":0.10,"Logistics / Delivery":0.25},
                 "ai_context": "Supply chain resilience focus: upstream quality across Supplier, Manufacturing, and Warehouse with higher reduction rates from coordinated supplier audit programme.",
             },
-            "7 — Customer Experience Focus": {
-                "description": "Target Customer Preference and Product Description together — improve UX, photography, and sizing.",
+            "7 - Customer Experience Focus": {
+                "description": "Target Customer Preference and Product Description together - improve UX, photography, and sizing.",
                 "budget": 150_000,
                 "cost_per_return": 22,
                 "costs": {"Product Description Mismatch":50000,"Warehouse / Packaging":40000,
@@ -868,7 +885,7 @@ elif page == "scenario":
                                "Customer Preference":0.30,"Logistics / Delivery":0.25},
                 "ai_context": "Customer experience strategy: combined investment in content accuracy and UX improvements to reduce both description mismatch and change-of-mind returns.",
             },
-            "8 — Crisis Response (Logistics Cost Rise)": {
+            "8 - Crisis Response (Logistics Cost Rise)": {
                 "description": "Logistics costs have risen to £35/return due to carrier price increases. Emergency carrier review.",
                 "budget": 150_000,
                 "cost_per_return": 35,
@@ -907,7 +924,7 @@ elif page == "scenario":
                     "Returns Prevented": f"{prevented:,}",
                     "Financial Saving":  f"£{saving:,.0f}",
                     "ROI":               f"{roi:.2f}x",
-                    "Status":            "✅ FUND" if fundable else "❌ SKIP",
+                    "Status":            "FUND" if fundable else "SKIP",
                     "_saving":           saving if fundable else 0,
                     "_prevented":        prevented if fundable else 0,
                     "_cost":             cost if fundable else 0,
@@ -937,7 +954,14 @@ elif page == "scenario":
             st.subheader("Scenario Output Table")
             display_cols = ["Root Cause","Priority","Risk Score","Cost","Reduction %",
                             "Returns Prevented","Financial Saving","ROI","Status"]
-            st.dataframe(results_df[display_cols], use_container_width=True, hide_index=True)
+            def _highlight_status(val):
+                if val == "FUND":
+                    return "background-color: #C8E6C9; color: #111111; font-weight: 600"
+                if val == "SKIP":
+                    return "background-color: #FFCDD2; color: #111111; font-weight: 600"
+                return ""
+            st.dataframe(results_df[display_cols].style.map(_highlight_status, subset=["Status"]),
+                         use_container_width=True, hide_index=True)
 
             col1, col2 = st.columns(2)
             with col1:
@@ -954,7 +978,7 @@ elif page == "scenario":
                                       yaxis_title="Amount (£ thousands)",
                                       plot_bgcolor="rgba(0,0,0,0)",
                                       legend=dict(orientation="h",y=-0.3))
-                    st.plotly_chart(fig, use_container_width=True)
+                    st.plotly_chart(fig, use_container_width=True, key=f"invest_vs_saving_{scenario_name}")
 
             with col2:
                 st.subheader("Cumulative Saving Waterfall")
@@ -973,7 +997,7 @@ elif page == "scenario":
                         ))
                     fig.update_layout(height=320, yaxis_title="Cumulative Saving (£)",
                                       plot_bgcolor="rgba(0,0,0,0)", barmode="stack")
-                    st.plotly_chart(fig, use_container_width=True)
+                    st.plotly_chart(fig, use_container_width=True, key=f"cumulative_waterfall_{scenario_name}")
 
         # ════════════════════════════════════════════════════════════════════════
         # TABS
@@ -981,7 +1005,7 @@ elif page == "scenario":
         tab1, tab2 = st.tabs(["🤖 Preset AI Scenarios", "🔧 Custom Scenario"])
 
         # ────────────────────────────────────────────────────────────────────────
-        # TAB 1 — PRESET AI SCENARIOS
+        # TAB 1 - PRESET AI SCENARIOS
         # ────────────────────────────────────────────────────────────────────────
         with tab1:
             st.markdown("### Select a Preset Scenario")
@@ -1045,22 +1069,22 @@ Keep it concise and professional, suitable for a supply chain manager."""
                     except Exception as e:
                         # Fallback explanation when API not available
                         fallback = {
-                            "1 — Conservative Budget (£75k)":
+                            "1 - Conservative Budget (£75k)":
                                 "This scenario addresses budget-constrained environments where only the most critical interventions can be funded. With £75,000, the system prioritises Product Description Mismatch (P1, 27% of returns) and Warehouse/Packaging (P2, 20.3%) as the highest-impact investments. The conservative approach ensures ROI is maximised within tight financial constraints, targeting £47,872 in annual savings. The trade-off is that Manufacturing/QC and Supplier Issues remain unaddressed, leaving 25.6% of returns without intervention.",
-                            "2 — Standard Budget — Baseline (£150k)":
-                                "This baseline scenario represents the recommended standard intervention programme using industry-standard parameters. With £150,000 and 22 per return cost, five of six root causes can be funded in priority order. The standard reduction rates (35% for descriptions, 30% for warehouse) reflect conservative industry benchmarks. This scenario serves as the comparison benchmark — all other scenarios should be evaluated against this baseline to assess whether the additional investment or parameter changes produce superior outcomes.",
-                            "3 — Full Investment (£250k)":
-                                "Full investment enables simultaneous intervention across all six root cause categories with enhanced budgets per area. Higher individual allocations (£40k-£60k per root cause) enable more comprehensive programmes — full content team restructure, warehouse management system upgrade, and strategic supplier development programme. Enhanced reduction rates (40-50%) reflect the improved outcomes achievable with adequate resources. This scenario demonstrates the maximum achievable return reduction of approximately 3,756 returns prevented annually.",
-                            "4 — Description Fix Priority":
-                                "This scenario concentrates 53% of the total budget on Product Description Mismatch — the highest volume root cause at 27% of all returns. The £80,000 intensive content overhaul funds professional photography, AI-assisted copywriting, and a complete size guide rebuild. The expected 55% reduction rate significantly exceeds the standard 35%, reflecting the multiplicative impact of addressing description accuracy comprehensively. The trade-off is reduced budget for other root causes, but the ROI on description fixes (£16,128 saving on £80,000 investment per year) is justified by the volume.",
-                            "5 — Warehouse Optimisation (Staff +30%)":
+                            "2 - Standard Budget - Baseline (£150k)":
+                                "This baseline scenario represents the recommended standard intervention programme using industry-standard parameters. With £150,000 and 22 per return cost, five of six root causes can be funded in priority order. The standard reduction rates (35% for descriptions, 30% for warehouse) reflect conservative industry benchmarks. This scenario serves as the comparison benchmark - all other scenarios should be evaluated against this baseline to assess whether the additional investment or parameter changes produce superior outcomes.",
+                            "3 - Full Investment (£250k)":
+                                "Full investment enables simultaneous intervention across all six root cause categories with enhanced budgets per area. Higher individual allocations (£40k-£60k per root cause) enable more comprehensive programmes - full content team restructure, warehouse management system upgrade, and strategic supplier development programme. Enhanced reduction rates (40-50%) reflect the improved outcomes achievable with adequate resources. This scenario demonstrates the maximum achievable return reduction of approximately 3,756 returns prevented annually.",
+                            "4 - Description Fix Priority":
+                                "This scenario concentrates 53% of the total budget on Product Description Mismatch - the highest volume root cause at 27% of all returns. The £80,000 intensive content overhaul funds professional photography, AI-assisted copywriting, and a complete size guide rebuild. The expected 55% reduction rate significantly exceeds the standard 35%, reflecting the multiplicative impact of addressing description accuracy comprehensively. The trade-off is reduced budget for other root causes, but the ROI on description fixes (£16,128 saving on £80,000 investment per year) is justified by the volume.",
+                            "5 - Warehouse Optimisation (Staff +30%)":
                                 "Increasing warehouse headcount by 30% addresses the root cause of picking errors and packaging failures at source. The £70,000 warehouse budget funds additional staff, pre-dispatch quality check stations, and retraining programmes. A 50% return reduction from Warehouse/Packaging represents the upper achievable bound with full process redesign and staffing improvements. This scenario is appropriate when warehouse returns are trending upward or when operational capacity is the primary constraint on quality.",
-                            "6 — Supply Chain Resilience Programme":
-                                "This strategic scenario addresses the entire upstream supply chain simultaneously — Supplier, Manufacturing, and Warehouse — through a coordinated quality programme. Higher reduction rates (50-55%) reflect synergies from treating these three interconnected root causes together rather than independently. The scenario prioritises long-term supply chain resilience over short-term saving maximisation. Appropriate for organisations where supplier relationship management and manufacturing quality are strategic priorities.",
-                            "7 — Customer Experience Focus":
-                                "By combining Product Description investment with Customer Preference interventions, this scenario targets the 47% of returns attributable to information mismatch and change-of-mind. Enhanced UX (£40,000) funds virtual try-on tools, augmented reality product views, and personalisation features that reduce impulse purchases. The combined 30% reduction in Customer Preference returns — normally the hardest to influence — reflects the impact of pre-purchase decision support tools on return behaviour.",
-                            "8 — Crisis Response (Logistics Cost Rise)":
-                                "A logistics cost increase to £35 per return fundamentally changes the financial calculus — every return now costs 59% more, making the logistics root cause significantly more expensive despite its lower volume. The £50,000 emergency carrier review funds carrier performance analysis, alternative courier evaluation, and contract renegotiation. A 40% logistics return reduction in this scenario saves substantially more than at the standard £22 cost. This scenario demonstrates how external cost shocks should trigger reallocation of intervention resources.",
+                            "6 - Supply Chain Resilience Programme":
+                                "This strategic scenario addresses the entire upstream supply chain simultaneously - Supplier, Manufacturing, and Warehouse - through a coordinated quality programme. Higher reduction rates (50-55%) reflect synergies from treating these three interconnected root causes together rather than independently. The scenario prioritises long-term supply chain resilience over short-term saving maximisation. Appropriate for organisations where supplier relationship management and manufacturing quality are strategic priorities.",
+                            "7 - Customer Experience Focus":
+                                "By combining Product Description investment with Customer Preference interventions, this scenario targets the 47% of returns attributable to information mismatch and change-of-mind. Enhanced UX (£40,000) funds virtual try-on tools, augmented reality product views, and personalisation features that reduce impulse purchases. The combined 30% reduction in Customer Preference returns - normally the hardest to influence - reflects the impact of pre-purchase decision support tools on return behaviour.",
+                            "8 - Crisis Response (Logistics Cost Rise)":
+                                "A logistics cost increase to £35 per return fundamentally changes the financial calculus - every return now costs 59% more, making the logistics root cause significantly more expensive despite its lower volume. The £50,000 emergency carrier review funds carrier performance analysis, alternative courier evaluation, and contract renegotiation. A 40% logistics return reduction in this scenario saves substantially more than at the standard £22 cost. This scenario demonstrates how external cost shocks should trigger reallocation of intervention resources.",
                         }
                         st.session_state[f"ai_explanation_{selected_preset}"] = fallback.get(
                             selected_preset,
@@ -1110,7 +1134,7 @@ Keep it concise and professional, suitable for a supply chain manager."""
                            f"({len(st.session_state.comparison_scenarios)} scenarios total)")
 
         # ────────────────────────────────────────────────────────────────────────
-        # TAB 2 — CUSTOM SCENARIO
+        # TAB 2 - CUSTOM SCENARIO
         # ────────────────────────────────────────────────────────────────────────
         with tab2:
             st.markdown("### Build Your Own Scenario")
@@ -1186,7 +1210,7 @@ Keep it concise and professional, suitable for a supply chain manager."""
                            f"({len(st.session_state.comparison_scenarios)} scenarios total)")
 
         # ════════════════════════════════════════════════════════════════════════
-        # COMPARISON SECTION — always visible below tabs
+        # COMPARISON SECTION - always visible below tabs
         # ════════════════════════════════════════════════════════════════════════
         st.divider()
         st.header("📊 Scenario Comparison")
@@ -1244,7 +1268,7 @@ Keep it concise and professional, suitable for a supply chain manager."""
                     xaxis_tickangle=-20,
                     yaxis_range=[0, max(savings)*1.2 if savings else 100],
                 )
-                st.plotly_chart(fig, use_container_width=True)
+                st.plotly_chart(fig, use_container_width=True, key="chart_14_line1261")
 
             with col2:
                 st.subheader("Returns Prevented by Scenario")
@@ -1261,12 +1285,12 @@ Keep it concise and professional, suitable for a supply chain manager."""
                     xaxis_tickangle=-20,
                     yaxis_range=[0, max(prevented)*1.2 if prevented else 100],
                 )
-                st.plotly_chart(fig, use_container_width=True)
+                st.plotly_chart(fig, use_container_width=True, key="chart_15_line1278")
 
             st.divider()
 
             # ── Grouped bar: saving per root cause across scenarios ───────────
-            st.subheader("Saving per Root Cause — Scenario Comparison")
+            st.subheader("Saving per Root Cause - Scenario Comparison")
             all_rcs = list(risk["root_cause_category"])
             fig = go.Figure()
             for i, (name, s) in enumerate(scenarios.items()):
@@ -1287,7 +1311,7 @@ Keep it concise and professional, suitable for a supply chain manager."""
                 plot_bgcolor="rgba(0,0,0,0)",
                 legend=dict(orientation="h", y=-0.3),
             )
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, use_container_width=True, key="chart_16_line1304")
 
             st.divider()
 
@@ -1326,20 +1350,20 @@ Keep it concise and professional, suitable for a supply chain manager."""
                     height=450,
                     legend=dict(orientation="h", y=-0.15),
                 )
-                st.plotly_chart(fig, use_container_width=True)
+                st.plotly_chart(fig, use_container_width=True, key="chart_17_line1343")
             else:
                 st.info("Add at least 2 scenarios to see the radar comparison chart.")
 
 
 # ─────────────────────────────────────────────────────────────────────────────
-# PAGE 7 — LLM RECOMMENDATIONS
+# PAGE 7 - LLM RECOMMENDATIONS
 # ─────────────────────────────────────────────────────────────────────────────
 elif page == "llm":
     st.title("💡 LLM Recommendation Engine")
     st.markdown(
         "**Ollama (Llama 3.2)** synthesises risk scores, SHAP outputs, sentiment profiles, "
         "and brand/region analysis into stakeholder-specific natural language recommendations "
-        "— running fully locally with no external API."
+        "- running fully locally with no external API."
     )
     st.divider()
 
@@ -1351,7 +1375,7 @@ elif page == "llm":
 
         # Metadata
         c1,c2,c3,c4 = st.columns(4)
-        kpi_card(c1, "LLM Model",       meta.get("model","Ollama — llama3.2"),    "Generative AI",       "#9B59B6")
+        kpi_card(c1, "LLM Model",       meta.get("model","Ollama: llama3.2"),    "Generative AI",       "#9B59B6")
         kpi_card(c2, "Recommendations", str(len(recs)),                "6 root causes",       "#2C5F8A")
         kpi_card(c3, "Total Saving",    f"£{meta.get('total_saving',0):,.0f}", "Potential annual", "#4CAF50")
         kpi_card(c4, "Total Cost",      f"£{meta.get('total_cost',0):,.0f}",   "Annual exposure",  "#E8563A")
@@ -1384,7 +1408,7 @@ elif page == "llm":
             risk_colour = RISK_COLOURS.get(r["risk_level"],"#999")
 
             with st.expander(
-                f"P{r['priority']} | {rc_display} — {r['stakeholder']} | "
+                f"P{r['priority']} | {rc_display} - {r['stakeholder']} | "
                 f"£{r['potential_saving']:,.0f} saving | {r['risk_level']} Risk",
                 expanded=(r["priority"] <= 2),
             ):
@@ -1499,11 +1523,11 @@ elif page == "llm":
 
 
 # ─────────────────────────────────────────────────────────────────────────────
-# PAGE 8 — STAKEHOLDER VIEWS
+# PAGE 8 - STAKEHOLDER VIEWS
 # ─────────────────────────────────────────────────────────────────────────────
 elif page == "stakeholder":
     st.title("👤 Stakeholder Views")
-    st.markdown("Role-based filtered views — each stakeholder sees only what is relevant to them.")
+    st.markdown("Role-based filtered views - each stakeholder sees only what is relevant to them.")
     st.divider()
 
     role = st.selectbox("Select Your Role", [
@@ -1553,7 +1577,7 @@ elif page == "stakeholder":
             ("P3","Issue quality notice to manufacturing suppliers","QA Team","£20,086/year"),
         ]
         for p,action,owner,saving in actions:
-            st.markdown(f"**{p}** — {action}  |  Owner: *{owner}*  |  Saving: **{saving}**")
+            st.markdown(f"**{p}** - {action}  |  Owner: *{owner}*  |  Saving: **{saving}**")
 
     elif "Warehouse" in role:
         rc = "Warehouse / Packaging"

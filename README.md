@@ -1,273 +1,281 @@
-# An Explainable AI Framework Integrating Customer Feedback and Transactional Data for Product Return Analysis in Fashion E-Commerce Supply Chains
+# An Explainable AI Framework Integrating Customer Feedback and Transactional Data for Product Return Prediction in Supply Chains
 
-**MSc Dissertation Project**
+**MSc Dissertation Project — MSc Applied Artificial Intelligence**  
+**WMG, University of Warwick**
 
 ---
 
 ## Project Overview
 
-This framework analyses confirmed product returns from a fashion e-commerce supply chain to identify operational root causes and generate targeted supply chain recommendations.
+This project presents an explainable AI framework for analysing confirmed product returns in a fashion e-commerce supply chain.
 
-Unlike traditional return prediction systems, this framework operates **post-return**. The objective is not to predict whether a customer will return an item, but to classify **why** the return occurred and route actionable recommendations to the responsible operational team.
+The framework operates **post-return**. Rather than predicting whether a customer will return an item, it analyses confirmed returns to classify their likely operational root causes, explain the model's predictions, prioritise causes according to operational risk, and translate the results into stakeholder-specific recommendations.
 
-The system combines transactional data, customer review text, and machine learning to produce explainable, stakeholder-specific decision support outputs.
+The framework integrates:
 
----
+- Transactional data
+- Customer review text
+- Natural Language Processing (NLP)
+- Supervised machine learning
+- SHAP-based explainability
+- Root-cause analysis
+- Risk-weighted prioritisation
+- Local Large Language Model (LLM) recommendations
+- Scenario-based intervention analysis
+- Interactive stakeholder decision support
 
-## Dissertation Phases
-
-| Phase | Description | Status |
-|-------|-------------|--------|
-| Phase 1 | Data Collection and Integration | ✅ Complete |
-| Phase 2 | NLP Customer Feedback Analysis | ✅ Complete |
-| Phase 3 | Root Cause Classification (ML) | ✅ Complete |
-| Phase 4 | Explainable AI (SHAP) | ✅ Complete |
-| Phase 5 | Root Cause Analysis Layer | ✅ Complete |
-| Phase 6 | Risk Assessment | ✅ Complete |
-| Phase 7 | Recommendation Engine | 🔄 Planned |
-| Phase 8 | Operational Optimisation (Linear Programming) | 🔄 Planned |
-| Phase 9 | Stakeholder Decision Support Dashboard | 🔄 Planned |
-| Phase 10 | Continuous Feedback Loop | 🔄 Planned |
+The final implementation was evaluated using a **50,000-record synthetic dataset** statistically anchored to real e-commerce transaction data and linguistically calibrated using a real Amazon Fashion review corpus. The secondary datasets were used as reference sources rather than being directly combined into the final synthetic dataset.
 
 ---
 
-## Project Structure
+## Dissertation Framework
 
-```
+The final framework consists of the following stages:
+
+| Stage | Component | Status |
+|---|---|---|
+| 1 | Data Sourcing and Synthetic Dataset Development | Complete |
+| 2 | NLP Customer Feedback Analysis | Complete |
+| 3 | Feature Engineering | Complete |
+| 4 | Root Cause Classification | Complete |
+| 5 | Explainable AI (SHAP) | Complete |
+| 6 | Root Cause Analysis | Complete |
+| 7 | Risk-Weighted Prioritisation | Complete |
+| 8 | LLM Recommendation Engine | Complete |
+| 9 | Stakeholder Decision Support Dashboard | Complete |
+| 10 | Continuous Feedback Loop | Conceptual / Future Work |
+
+The continuous feedback loop is presented as a future extension rather than an implemented component.
+
+> **Development note:** An earlier version of the project included a Linear Programming optimisation stage. This was implemented during development but removed from the final framework after evaluation indicated that the LLM-based recommendation approach provided sufficiently actionable, cost-aware guidance with lower implementation complexity.
+
+---
+
+## Repository Structure
+
+```text
 files/
-├── requirements.txt              ← Install all dependencies from here
-├── run_phase2.py                 ← Run Phase 2 NLP pipeline
-├── run_phase3.py                 ← Run Phase 3 ML pipeline
-├── run_phase4.py                 ← Run Phase 4 SHAP pipeline
+│
+├── requirements.txt
+├── dashboard.py
+│
+├── run_phase2.py
+├── run_phase3.py
+├── run_phase4.py
+├── run_phase5.py
+├── run_phase6.py
+└── run_phase7.py
 │
 ├── src/
 │   ├── __init__.py
+│   │
 │   ├── phase2/
-│   │   ├── __init__.py
-│   │   ├── utils.py              ← Paths, logger, helpers
-│   │   ├── preprocessing.py      ← Text cleaning, tokenisation, lemmatisation
-│   │   ├── sentiment_analysis.py ← VADER + TextBlob scoring
-│   │   ├── keyword_extraction.py ← TF-IDF keyword extraction
-│   │   ├── topic_modelling.py    ← Gensim LDA topic modelling
-│   │   ├── complaint_classifier.py ← NLP-driven complaint classification
-│   │   ├── visualisations.py     ← All Phase 2 dissertation plots
-│   │   └── pipeline.py           ← Phase 2 orchestrator
+│   │   ├── preprocessing.py
+│   │   ├── sentiment_analysis.py
+│   │   ├── keyword_extraction.py
+│   │   ├── topic_modelling.py
+│   │   ├── complaint_classifier.py
+│   │   ├── visualisations.py
+│   │   └── pipeline.py
+│   │
 │   ├── phase3/
-│   │   ├── __init__.py
-│   │   ├── utils.py              ← Paths, logger, helpers
-│   │   ├── feature_engineering.py ← Encoding, SMOTE, train/test split
-│   │   ├── models.py             ← LR, Random Forest, XGBoost training
-│   │   ├── evaluation.py         ← Metrics, confusion matrix, ROC, importance
-│   │   └── pipeline.py           ← Phase 3 orchestrator
-│   └── phase4/
-│       ├── __init__.py
-│       ├── utils.py              ← Paths, logger, helpers
-│       ├── explainer.py          ← SHAP TreeExplainer, value computation
-│       ├── visualisations.py     ← Global importance, beeswarm, waterfall, heatmap
-│       └── pipeline.py           ← Phase 4 orchestrator
+│   │   ├── feature_engineering.py
+│   │   ├── models.py
+│   │   ├── evaluation.py
+│   │   └── pipeline.py
+│   │
+│   ├── phase4/
+│   │   ├── explainer.py
+│   │   ├── visualisations.py
+│   │   └── pipeline.py
+│   │
+│   ├── phase5/
+│   │   ├── analyser.py
+│   │   ├── visualisations.py
+│   │   └── pipeline.py
+│   │
+│   ├── phase6/
+│   │   ├── risk_scorer.py
+│   │   ├── visualisations.py
+│   │   └── pipeline.py
+│   │
+│   └── phase7/
+│       ├── llm_client.py
+│       ├── prompt_builder.py
+│       ├── recommendation_engine.py
+│       ├── visualisations.py
+│       └── pipeline.py
 │
 ├── data/
 │   ├── raw/
-│   │   └── fashion_returns_dataset.csv        ← Phase 1 original dataset
 │   └── processed/
-│       └── fashion_returns_dataset_nlp.csv    ← Phase 2 enriched dataset
 │
 ├── models/
 │   ├── phase2/
-│   │   ├── tfidf_vectorizer.joblib
-│   │   ├── lda_model.joblib
-│   │   ├── lda_dictionary.joblib
-│   │   ├── lda_corpus.joblib
-│   │   └── topic_label_map.joblib
 │   ├── phase3/
-│   │   ├── logistic_regression.joblib
-│   │   ├── random_forest.joblib
-│   │   ├── xgboost.joblib
-│   │   ├── best_model.joblib          ← XGBoost (best performer)
-│   │   ├── best_model_name.joblib
-│   │   ├── label_encoder.joblib
-│   │   ├── feature_names.joblib
-│   │   ├── scaler.joblib
-│   │   ├── X_test.joblib
-│   │   ├── y_test.joblib
-│   │   └── evaluation_results.joblib
-│   └── phase4/
-│       ├── shap_explainer.joblib
-│       └── shap_values.joblib
+│   ├── phase4/
+│   ├── phase5/
+│   ├── phase6/
+│   └── phase7/
 │
 └── outputs/
-    ├── phase2/plots/              ← 9 NLP visualisation plots
-    ├── phase3/plots/              ← Confusion matrices, ROC curves, feature importance
-    └── phase4/plots/              ← SHAP global, beeswarm, waterfall, heatmap plots
-```
+    ├── phase2/
+    ├── phase3/
+    ├── phase4/
+    ├── phase5/
+    ├── phase6/
+    └── phase7/
 
----
-
-## Setup Instructions
+## Installation
 
 ### Prerequisites
 
-- Python 3.12
-- Windows / macOS / Linux
+- Python **3.12**
+- Git
+- Ollama (for the local LLM recommendation engine)
 
-### Step 1 — Create a virtual environment
+### 1. Clone the repository
+
+```bash
+git clone <repository-url>
+cd <repository-folder>/files
+```
+
+### 2. Create a virtual environment
+
+**Windows**
 
 ```bash
 py -3.12 -m venv .venv
-```
-
-### Step 2 — Activate the virtual environment
-
-**Windows:**
-```bash
 .\.venv\Scripts\activate
 ```
 
-**macOS / Linux:**
+**macOS / Linux**
+
 ```bash
+python3.12 -m venv .venv
 source .venv/bin/activate
 ```
 
-### Step 3 — Install all dependencies
+### 3. Install dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### Step 4 — Download NLTK data (required for Phase 2)
+### 4. Download required NLP resources
 
 ```bash
-python -m nltk.downloader punkt_tab stopwords wordnet omw-1.4
+python -m nltk.downloader punkt_tab stopwords wordnet omw-1.4 vader_lexicon
 ```
+
+### 5. Install Ollama and download the local model
+
+Install Ollama, then pull the model used in the dissertation:
+
+```bash
+ollama pull llama3.2
+```
+
+Verify Ollama is running before executing Phase 7.
 
 ---
 
-## Running the Pipeline
+## Running the Framework
 
-Phases must be run in order. Each phase depends on the outputs of the previous one.
+Run each phase sequentially from the `files/` directory.
 
-### Phase 2 — NLP Pipeline
+### Phase 2 — NLP Customer Feedback Analysis
+
+Generates sentiment scores, complaint categories, keywords, and LDA topics.
 
 ```bash
 python run_phase2.py
 ```
 
-**Input:** `data/raw/fashion_returns_dataset.csv`
-**Output:** `data/processed/fashion_returns_dataset_nlp.csv` + NLP model artefacts + 9 plots
-
-Runtime: approximately 3–5 minutes
+Outputs are saved to `data/processed/phase2/`.
 
 ---
 
-### Phase 3 — Root Cause Classification
+### Phase 3 — Feature Engineering and Root Cause Classification
+
+Creates engineered features, applies SMOTE to the training data, trains Logistic Regression, Random Forest, and XGBoost models, and evaluates model performance.
 
 ```bash
 python run_phase3.py
 ```
 
-**Input:** `data/processed/fashion_returns_dataset_nlp.csv`
-**Output:** 3 trained models + evaluation metrics + confusion matrices + ROC curves
-
-Runtime: approximately 2–3 minutes
+Outputs include trained models, evaluation metrics, and processed feature datasets.
 
 ---
 
-### Phase 4 — SHAP Explainability
+### Phase 4 — Explainable AI (SHAP)
+
+Generates SHAP global feature importance, class-level explanations, waterfall plots, and dependence plots.
 
 ```bash
 python run_phase4.py
 ```
 
-**Input:** Phase 3 best model (XGBoost) + test set
-**Output:** SHAP explainer + 15 dissertation plots
-
-Runtime: approximately 1–2 minutes
+Outputs are saved to `outputs/phase4/`.
 
 ---
 
-## Key Results
+### Phase 5 — Root Cause Analysis
 
-### Phase 2 — NLP
+Aggregates classified returns into operational insights, temporal trends, regional analysis, and business visualisations.
 
-| Metric | Value |
-|--------|-------|
-| Reviews analysed | 50,000 |
-| Sentiment scores computed | 50,000 |
-| Keywords extracted | 14,000 reviews × 8 keywords |
-| LDA topics discovered | 6 |
-| LDA coherence score (c_v) | 0.6283 |
-| Complaint categories inferred | 11 |
+```bash
+python run_phase5.py
+```
 
-### Phase 3 — Machine Learning
-
-| Model | Accuracy | Macro F1 | Macro ROC-AUC |
-|-------|----------|----------|---------------|
-| Logistic Regression | 78.9% | 0.767 | 0.951 |
-| Random Forest | 95.6% | 0.945 | 0.995 |
-| **XGBoost** | **97.1%** | **0.964** | **0.999** |
-
-**Target variable:** `root_cause_category` — 6 operational root cause classes
-
-**Class imbalance handling:** SMOTE applied to training set only
-
-### Phase 4 — SHAP
-
-- Global feature importance across all 6 root cause classes
-- Per-class beeswarm plots (6 plots)
-- Per-class waterfall plots (6 plots)
-- Feature × class importance heatmap
+Outputs are saved to `outputs/phase5/`.
 
 ---
 
-## Target Variable
+### Phase 6 — Risk-Weighted Prioritisation
 
-The ML target variable is `root_cause_category` — the six operational root causes of confirmed product returns:
+Calculates composite operational risk scores and assigns priority levels (P1–P6).
 
-| Root Cause | Training Count | % of Returns |
-|------------|---------------|--------------|
-| Product Description Mismatch | 3,784 | 27.0% |
-| Warehouse / Packaging | 2,840 | 20.3% |
-| Customer Preference | 2,802 | 20.0% |
-| Manufacturing / Quality Control | 2,284 | 16.3% |
-| Supplier Issues | 1,307 | 9.3% |
-| Logistics / Delivery | 983 | 7.0% |
+```bash
+python run_phase6.py
+```
+
+Outputs include the risk register and prioritisation tables.
 
 ---
 
-## Dataset
+### Phase 7 — LLM Recommendation Engine
 
-| Property | Value |
-|----------|-------|
-| Total rows | 50,000 |
-| Total columns | 50 |
-| Returned orders (RICH tier) | 14,000 |
-| Non-returned orders (LEAN tier) | 36,000 |
-| Return rate | 28% |
+Uses the local Llama 3.2 model through Ollama to generate operational recommendations for each prioritised root cause.
 
----
+```bash
+python run_phase7.py
+```
 
-## Dependencies
-
-All dependencies are listed in `requirements.txt`. Key libraries:
-
-| Library | Purpose |
-|---------|---------|
-| pandas, numpy | Data manipulation |
-| scikit-learn | Logistic Regression, Random Forest, preprocessing |
-| xgboost | Gradient boosted classification |
-| imbalanced-learn | SMOTE oversampling |
-| shap | Explainability |
-| nltk, vaderSentiment, textblob | NLP and sentiment analysis |
-| gensim | LDA topic modelling |
-| matplotlib, seaborn, wordcloud | Visualisation |
-| joblib | Model persistence |
+Outputs are saved to `outputs/phase7/`.
 
 ---
 
-## Notes
+## Launching the Dashboard
 
-- All phases must be run from the `files/` directory
-- Never run phases out of order — each phase depends on artefacts from the previous one
-- The original dataset `data/raw/fashion_returns_dataset.csv` is never overwritten
-- All model artefacts are saved to `models/` and reused in later phases
-- All plots are saved to `outputs/` and are dissertation-ready at 150 DPI
+Once all phases have completed successfully, launch the Streamlit dashboard:
+
+```bash
+streamlit run dashboard.py
+```
+
+The dashboard will open in your browser and includes:
+
+- Overview
+- Model Performance
+- SHAP Explainability
+- Root Cause Analysis
+- Risk Assessment
+- Scenario Simulator
+- LLM Recommendations
+- Stakeholder Views
+
+## Expected Runtime
+
+Running the complete analytical pipeline (Phases 2–7) on the dissertation dataset takes approximately **10–15 minutes** on a standard laptop with Python 3.12 installed. The dashboard launches after the pipeline has generated the required model artefacts and visualisation outputs.
